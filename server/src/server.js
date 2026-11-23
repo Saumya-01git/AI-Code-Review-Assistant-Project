@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import authRoutes from './routes/authRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 import './db/database.js'; // Ensures tables are initialized
 
 dotenv.config();
@@ -26,6 +27,9 @@ app.get('/api/health', (req, res) => {
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// File Upload & Snippet Routes
+app.use('/api', uploadRoutes);
 
 // 404 Handler
 app.use((req, res) => {
