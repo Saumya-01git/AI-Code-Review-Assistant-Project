@@ -61,6 +61,20 @@ export function initializeDatabase() {
       FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
     );
   `);
+
+  // Seed default demo user if not present
+  const demo = db.prepare('SELECT id FROM users WHERE email = ?').get('saumya@example.com');
+  if (!demo) {
+    const res = db.prepare(`
+      INSERT INTO users (name, email, password)
+      VALUES (?, ?, ?)
+    `).run('Saumya Developer', 'saumya@example.com', '$2a$10$2o/nEbfd8/Y9uQEAUpspE.T1GT/KGCpFLCA0WAYQu3NcTM5vqUtX.');
+
+    db.prepare(`
+      INSERT INTO projects (user_id, project_name, github_url)
+      VALUES (?, ?, ?)
+    `).run(Number(res.lastInsertRowid), 'Default Workspace', '');
+  }
 }
 
 initializeDatabase();

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, Cpu, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/dashboard';
@@ -32,13 +32,12 @@ export default function LoginPage() {
     setError('');
     setSubmitting(true);
     try {
-      // Create or login demo developer account
+      // First try to login with demo developer account
       await login('saumya@example.com', 'developer123');
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      // If demo account not registered yet, auto-register then login
+      // If demo account not registered yet in SQLite, auto-register then login
       try {
-        const { register } = useAuth();
         await register('Saumya Developer', 'saumya@example.com', 'developer123');
         navigate('/dashboard', { replace: true });
       } catch (regErr) {
