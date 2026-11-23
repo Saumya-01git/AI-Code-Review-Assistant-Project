@@ -1,0 +1,29 @@
+{
+  "name": "ai-code-review-assistant",
+  "version": "1.0.0",
+  "description": "Full-stack AI Code Review Assistant with static code analysis and AI-powered recommendations",
+  "main": "server/src/server.js",
+  "scripts": {
+    "start": "node server/src/server.js",
+    "server": "npm run start --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run start --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client",
+    "test": "node server/tests/run_tests.js"
+  },
+  "keywords": [
+    "ai",
+    "code-review",
+    "static-analysis",
+    "eslint",
+    "react",
+    "express",
+    "jwt",
+    "ast"
+  ],
+  "author": "Saumya",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
