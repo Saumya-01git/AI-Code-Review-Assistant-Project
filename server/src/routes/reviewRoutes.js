@@ -283,6 +283,112 @@ router.post('/reviews/static', authenticateToken, (req, res) => {
   }
 });
 
+// List User Review History with Search & Filtering
+router.get('/reviews', authenticateToken, (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { q, language, reviewType, minScore } = req.query;
+
+    let query = `
+      SELECT r.*, p.project_name, COUNT(rf.id) as findings_count
+      FROM reviews r
+      JOIN projects p ON r.project_id = p.id
+      LEFT JOIN review_findings rf ON r.id = rf.review_id
+      WHERE p.user_id = ?
+    `;
+    const params = [userId];
+
+    if (q && q.trim()) {
+      query += ` AND (r.summary LIKE ? OR r.raw_code LIKE ? OR r.language LIKE ?)`;
+      const searchPattern = `%${q.trim()}%`;
+      params.push(searchPattern, searchPattern, searchPattern);
+    }
+
+    if (language && language !== 'all') {
+      query += ` AND LOWER(r.language) = LOWER(?)`;
+      params.push(language);
+    }
+
+    if (reviewType && reviewType !== 'all') {
+      query += ` AND r.review_type = ?`;
+      params.push(reviewType);
+    }
+
+    if (minScore) {
+      query += ` AND r.overall_score >= ?`;
+      params.push(Number(minScore));
+    }
+
+    query += ` GROUP BY r.id ORDER BY r.created_at DESC`;
+
+    const reviews = db.prepare(query).all(...params);
+
+    return res.json({
+      success: true,
+      count: reviews.length,
+      reviews
+    });
+  } catch (error) {
+    console.error('List reviews error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch review history.' });
+  }
+});
+
+// Delete specific review
+router.delete('/reviews/:id', authenticateToken, (req, res) => {
+  try {
+    const reviewId = req.params.id;
+    const userId = req.user.id;
+
+    // Verify ownership
+    const review = db.prepare(`
+      SELECT r.id FROM reviews r
+      JOIN projects p ON r.project_id = p.id
+      WHERE r.id = ? AND p.user_id = ?
+    `).get(reviewId, userId);
+
+    if (!review) {
+      return res.status(404).json({ success: false, message: 'Review not found or unauthorized.' });
+    }
+
+    db.prepare('DELETE FROM review_findings WHERE review_id = ?').run(reviewId);
+    db.prepare('DELETE FROM reviews WHERE id = ?').run(reviewId);
+
+    return res.json({
+      success: true,
+      message: `Review #${reviewId} deleted successfully.`
+    });
+  } catch (error) {
+    console.error('Delete review error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to delete review.' });
+  }
+});
+
+// Delete all reviews for the current user
+router.delete('/reviews', authenticateToken, (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userReviews = db.prepare(`
+      SELECT r.id FROM reviews r
+      JOIN projects p ON r.project_id = p.id
+      WHERE p.user_id = ?
+    `).all(userId);
+
+    for (const r of userReviews) {
+      db.prepare('DELETE FROM review_findings WHERE review_id = ?').run(r.id);
+      db.prepare('DELETE FROM reviews WHERE id = ?').run(r.id);
+    }
+
+    return res.json({
+      success: true,
+      message: `Cleared all (${userReviews.length}) reviews for user.`
+    });
+  } catch (error) {
+    console.error('Bulk delete reviews error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to clear review history.' });
+  }
+});
+
 // Get review details by ID
 router.get('/reviews/:id', authenticateToken, (req, res) => {
   try {
