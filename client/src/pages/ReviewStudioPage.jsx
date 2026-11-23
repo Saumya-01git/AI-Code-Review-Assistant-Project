@@ -9,7 +9,9 @@ import {
   Sparkles, 
   CheckCircle2, 
   AlertCircle,
-  FileCheck
+  FileCheck,
+  GitBranch,
+  Info
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -257,7 +259,46 @@ export default function ReviewStudioPage() {
             </span>
           )}
         </button>
+
+        <button
+          onClick={() => setActiveTab('github')}
+          className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+            activeTab === 'github'
+              ? 'border-indigo-400 text-indigo-400'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <GitBranch className="w-4 h-4" />
+          <span>GitHub Repo (Scope Note)</span>
+        </button>
       </div>
+
+      {/* GitHub Repo Scope Note View */}
+      {activeTab === 'github' && (
+        <div className="glass-panel p-6 rounded-2xl border border-indigo-500/30 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <GitBranch className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-white">GitHub Repository API Integration</h3>
+              <p className="text-xs text-indigo-300 font-medium">Curriculum Scope Specification: Not Working on</p>
+            </div>
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            Per the internship project documentation (Day 5 & Core Requirements), direct GitHub remote repository crawling is explicitly marked as <span className="text-amber-400 font-semibold">"Not Working on"</span> to focus development on in-memory snippet analysis and direct source file uploads via Multer.
+          </p>
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-cyan-400 font-medium">
+              <Info className="w-4 h-4" />
+              <span>Recommended Workflow</span>
+            </div>
+            <p className="text-slate-400 leading-relaxed">
+              Please switch to the <strong>Paste Code Snippet</strong> tab to inspect code directly in Monaco Editor, or use <strong>Upload Source Files</strong> to upload your project files.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Top Toolbar */}
       <div className="glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
