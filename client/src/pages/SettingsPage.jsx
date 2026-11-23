@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { User, KeyRound, Shield, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user, updateProfile } = useAuth();
@@ -34,22 +34,22 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl animate-fade-in pb-16">
+    <div className="space-y-7 max-w-2xl animate-fade-in pb-16">
       <div>
-        <h2 className="text-xl font-bold text-slate-900">Account Settings</h2>
-        <p className="text-xs text-slate-500 mt-0.5">Manage your developer profile and security preferences.</p>
+        <h2 className="text-2xl font-extrabold text-slate-900">Account Settings</h2>
+        <p className="text-sm text-slate-500 mt-1">Manage your developer profile and security preferences.</p>
       </div>
 
-      <div className="p-6 rounded-xl border border-slate-200/90 bg-white shadow-sm">
+      <div className="p-7 rounded-2xl border border-slate-200/90 bg-white shadow-sm">
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-center gap-2">
+          <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{error}</span>
           </div>
         )}
 
         {message && (
-          <div className="mb-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-2">
+          <div className="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{message}</span>
           </div>
@@ -57,46 +57,46 @@ export default function SettingsPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+            <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Full Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 focus:border-[#DD5E98] rounded-lg px-3.5 py-2 text-xs font-medium text-slate-900 outline-none"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-[#4361EE] rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-900 outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+            <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Email Address</label>
             <input
               type="email"
               disabled
               value={user?.email || ''}
-              className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3.5 py-2 text-xs font-medium text-slate-400 cursor-not-allowed outline-none"
+              className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium text-slate-400 cursor-not-allowed outline-none"
             />
           </div>
 
-          <div className="pt-4 border-t border-slate-150 space-y-3">
-            <h3 className="text-xs font-bold text-slate-900">Change Password</h3>
+          <div className="pt-4 border-t border-slate-200 space-y-3.5">
+            <h3 className="text-sm font-bold text-slate-900">Change Password</h3>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Current Password</label>
+              <label className="block text-xs sm:text-sm font-semibold text-slate-600 mb-1">Current Password</label>
               <input
                 type="password"
                 placeholder="Required to set a new password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#DD5E98] rounded-lg px-3.5 py-2 text-xs font-medium text-slate-900 outline-none"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-[#4361EE] rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-900 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">New Password</label>
+              <label className="block text-xs sm:text-sm font-semibold text-slate-600 mb-1">New Password</label>
               <input
                 type="password"
                 placeholder="At least 6 characters"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-[#DD5E98] rounded-lg px-3.5 py-2 text-xs font-medium text-slate-900 outline-none"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-[#4361EE] rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-900 outline-none"
               />
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] hover:opacity-95 text-white font-semibold text-xs shadow-sm transition disabled:opacity-50"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F72585] to-[#4361EE] hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#4361EE]/20 transition disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Settings'}
           </button>
