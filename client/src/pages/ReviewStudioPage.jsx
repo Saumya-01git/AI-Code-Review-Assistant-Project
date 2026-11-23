@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import StaticAnalysisResults from '../components/review/StaticAnalysisResults';
+import ComplexityDashboard from '../components/review/ComplexityDashboard';
+import AIReviewResults from '../components/review/AIReviewResults';
 
 const CODE_PRESETS = {
   javascript_buggy: {
@@ -104,9 +106,15 @@ export default function ReviewStudioPage() {
   const [notification, setNotification] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Stage 1 Static Analysis State
+  // Review Results States
   const [staticResults, setStaticResults] = useState(null);
+  const [aiResults, setAiResults] = useState(null);
+  const [complexityResults, setComplexityResults] = useState(null);
   const [analyzingStatic, setAnalyzingStatic] = useState(false);
+  const [analyzingAi, setAnalyzingAi] = useState(false);
+  const [analyzingFull, setAnalyzingFull] = useState(false);
+  const [activeResultTab, setActiveResultTab] = useState('static'); // 'static' | 'ai' | 'complexity'
+
   const editorInstanceRef = useRef(null);
   const resultsRef = useRef(null);
 
@@ -150,6 +158,7 @@ export default function ReviewStudioPage() {
       if (!data.success) throw new Error(data.message || 'Static analysis failed');
 
       setStaticResults(data);
+      setActiveResultTab('static');
       showNotification('success', `Stage 1 Static Analysis complete: ${data.summary.totalIssues} issue(s) detected.`);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -158,6 +167,48 @@ export default function ReviewStudioPage() {
       showNotification('error', err.message);
     } finally {
       setAnalyzingStatic(false);
+    }
+  };
+
+  const handleRunFullSuite = async () => {
+    if (!code || !code.trim()) {
+      showNotification('error', 'Please provide or paste source code to analyze.');
+      return;
+    }
+
+    setAnalyzingFull(true);
+    setNotification(null);
+
+    try {
+      const res = await fetch('/api/reviews/full', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          code,
+          language,
+          fileName: snippetTitle || 'code.js',
+          saveToHistory: true
+        })
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Full review suite failed');
+
+      setStaticResults(data.static);
+      setAiResults(data.ai);
+      setComplexityResults(data.complexity);
+      setActiveResultTab('complexity');
+      showNotification('success', `Full Review Complete! Overall Quality Score: ${data.overallScore}/100`);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } catch (err) {
+      showNotification('error', err.message);
+    } finally {
+      setAnalyzingFull(false);
     }
   };
 
@@ -272,18 +323,36 @@ export default function ReviewStudioPage() {
 
           <button
             onClick={handleRunStaticAnalysis}
-            disabled={analyzingStatic}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+            disabled={analyzingStatic || analyzingFull}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition disabled:opacity-50"
           >
             {analyzingStatic ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Running Linter...</span>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                <span>Linting...</span>
               </>
             ) : (
               <>
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Stage 1: Static Analysis</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Stage 1: Static</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleRunFullSuite}
+            disabled={analyzingStatic || analyzingFull}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+          >
+            {analyzingFull ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Deep Review & Complexity...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>Full Review & Complexity</span>
               </>
             )}
           </button>
@@ -515,13 +584,84 @@ export default function ReviewStudioPage() {
         </div>
       </div>
 
-      {/* Stage 1 Static Code Analysis Results Dashboard */}
-      {staticResults && (
-        <div ref={resultsRef}>
-          <StaticAnalysisResults 
-            results={staticResults} 
-            onLineClick={handleLineClick} 
-          />
+      {/* Review Results Suite */}
+      {(staticResults || aiResults || complexityResults) && (
+        <div ref={resultsRef} className="space-y-4">
+          {/* Results Tab Selector */}
+          <div className="flex border-b border-slate-800 gap-4 mt-8">
+            {staticResults && (
+              <button
+                onClick={() => setActiveResultTab('static')}
+                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                  activeResultTab === 'static'
+                    ? 'border-cyan-400 text-cyan-400'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Stage 1: Static Analysis</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-300 text-[10px]">
+                  {staticResults.findings.length}
+                </span>
+              </button>
+            )}
+
+            {aiResults && (
+              <button
+                onClick={() => setActiveResultTab('ai')}
+                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                  activeResultTab === 'ai'
+                    ? 'border-indigo-400 text-indigo-400'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span>Stage 2: AI Review</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px]">
+                  {aiResults.aiScore}/100
+                </span>
+              </button>
+            )}
+
+            {complexityResults && (
+              <button
+                onClick={() => setActiveResultTab('complexity')}
+                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                  activeResultTab === 'complexity'
+                    ? 'border-emerald-400 text-emerald-400'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Code2 className="w-4 h-4" />
+                <span>Complexity & Code Smells</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px]">
+                  M={complexityResults.cyclomaticComplexity.score}
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Active Tab View */}
+          {activeResultTab === 'static' && staticResults && (
+            <StaticAnalysisResults 
+              results={staticResults} 
+              onLineClick={handleLineClick} 
+            />
+          )}
+
+          {activeResultTab === 'ai' && aiResults && (
+            <AIReviewResults 
+              aiResults={aiResults} 
+              onLineClick={handleLineClick} 
+            />
+          )}
+
+          {activeResultTab === 'complexity' && complexityResults && (
+            <ComplexityDashboard 
+              complexity={complexityResults} 
+              onLineClick={handleLineClick} 
+            />
+          )}
         </div>
       )}
     </div>

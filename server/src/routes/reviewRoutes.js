@@ -2,9 +2,125 @@ import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { analyzeStaticCode } from '../services/staticAnalyzer.js';
 import { reviewCodeWithAI } from '../services/aiReviewer.js';
+import { analyzeComplexity } from '../services/complexityAnalyzer.js';
 import { db } from '../db/database.js';
 
 const router = Router();
+
+// Run Complexity Analysis & Code Smell Reporting
+router.post('/reviews/complexity', authenticateToken, (req, res) => {
+  try {
+    const { code, language, fileName } = req.body;
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, message: 'Source code is required.' });
+    }
+
+    const lang = language || 'javascript';
+    const targetFile = fileName || 'code.js';
+
+    const complexityResult = analyzeComplexity(code, lang, targetFile);
+    return res.json(complexityResult);
+  } catch (error) {
+    console.error('Complexity analysis error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to analyze code complexity.' });
+  }
+});
+
+// Run Full Review Suite: Stage 1 Static + Stage 2 AI + Complexity Metrics
+router.post('/reviews/full', authenticateToken, async (req, res) => {
+  try {
+    const { code, language, fileName, customApiKey, saveToHistory, projectId } = req.body;
+    const userId = req.user.id;
+
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, message: 'Source code is required.' });
+    }
+
+    const lang = language || 'javascript';
+    const targetFile = fileName || 'code.js';
+
+    // 1. Stage 1 Static Analysis
+    const staticResult = analyzeStaticCode(code, lang, targetFile);
+
+    // 2. Complexity & Code Smells
+    const complexityResult = analyzeComplexity(code, lang, targetFile);
+
+    // 3. Stage 2 AI Review
+    const aiResult = await reviewCodeWithAI(code, lang, targetFile, customApiKey);
+
+    // Composite Quality Score (0-100)
+    const staticErrors = staticResult.summary.errors;
+    const staticWarnings = staticResult.summary.warnings;
+    const staticDeduction = (staticErrors * 12) + (staticWarnings * 5);
+    const smellDeduction = complexityResult.summary.totalSmells * 3;
+    const cyclomaticDeduction = Math.max(0, complexityResult.cyclomaticComplexity.score - 5) * 2;
+
+    let overallScore = 100 - staticDeduction - smellDeduction - cyclomaticDeduction;
+    overallScore = Math.max(25, Math.min(100, Math.round((overallScore + aiResult.aiScore) / 2)));
+
+    let savedReviewId = null;
+
+    if (saveToHistory) {
+      let targetProjectId = projectId;
+      if (!targetProjectId) {
+        const p = db.prepare('SELECT id FROM projects WHERE user_id = ? ORDER BY id ASC LIMIT 1').get(userId);
+        targetProjectId = p ? p.id : null;
+        if (!targetProjectId) {
+          const ins = db.prepare('INSERT INTO projects (user_id, project_name) VALUES (?, ?)').run(userId, 'Default Project');
+          targetProjectId = Number(ins.lastInsertRowid);
+        }
+      }
+
+      const summaryText = `Full 2-Stage Review: Score ${overallScore}/100. ${staticResult.findings.length} static findings, ${complexityResult.codeSmells.length} code smells, Cyclomatic: ${complexityResult.cyclomaticComplexity.score}.`;
+      
+      const metricsJson = JSON.stringify({
+        cyclomatic: complexityResult.cyclomaticComplexity.score,
+        loc: complexityResult.metrics.linesOfCode,
+        functions: complexityResult.metrics.functionsCount,
+        classes: complexityResult.metrics.classesCount
+      });
+
+      const reviewInsert = db.prepare(`
+        INSERT INTO reviews (project_id, review_type, overall_score, summary, language, raw_code, metrics)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(targetProjectId, 'full_suite', overallScore, summaryText, lang, code, metricsJson);
+
+      savedReviewId = Number(reviewInsert.lastInsertRowid);
+
+      const insertFinding = db.prepare(`
+        INSERT INTO review_findings (review_id, severity, issue, explanation, suggested_fix, file_name, line_number)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      // Save static findings
+      for (const f of staticResult.findings) {
+        insertFinding.run(savedReviewId, f.severity, f.issue, f.explanation, f.suggested_fix, targetFile, f.line_number);
+      }
+
+      // Save code smells as findings
+      for (const s of complexityResult.codeSmells) {
+        insertFinding.run(savedReviewId, s.severity, s.issue, s.explanation, s.suggested_fix, targetFile, s.line_number);
+      }
+
+      // Save AI bugs as findings
+      for (const b of (aiResult.bugs || [])) {
+        insertFinding.run(savedReviewId, b.severity, b.title, b.description, b.recommendation, targetFile, b.lineNumber || 1);
+      }
+    }
+
+    return res.json({
+      success: true,
+      reviewId: savedReviewId,
+      overallScore,
+      static: staticResult,
+      complexity: complexityResult,
+      ai: aiResult
+    });
+  } catch (error) {
+    console.error('Full review suite error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to process full review suite.' });
+  }
+});
 
 // Run Stage 2 AI-Powered Code Review
 router.post('/reviews/ai', authenticateToken, async (req, res) => {
