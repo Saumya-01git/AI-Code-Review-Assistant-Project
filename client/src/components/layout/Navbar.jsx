@@ -1,17 +1,20 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { 
   Sparkles, 
   User, 
   LogOut, 
   PlusCircle, 
   ShieldCheck,
-  Bell
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -32,6 +35,14 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
+        <button
+          onClick={toggleTheme}
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        >
+          {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+        </button>
+
         <Link
           to="/review"
           className="flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
