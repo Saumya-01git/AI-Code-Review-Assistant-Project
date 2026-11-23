@@ -8,5 +8,7 @@ build/
 Thumbs.db
 server/database.sqlite
 server/database.sqlite-journal
+server/data/*.sqlite
+server/data/*.sqlite-journal
 server/uploads/*
 !server/uploads/.gitkeep
