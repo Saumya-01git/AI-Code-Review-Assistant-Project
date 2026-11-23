@@ -35,16 +35,16 @@ export default function DocGeneratorView({ docs, onLineClick }) {
   };
 
   return (
-    <div className="space-y-6 pt-6 border-t border-slate-800 animate-fade-in">
+    <div className="space-y-6 pt-6 border-t-2 border-[#E16F7C]/25 animate-fade-in">
       {/* Doc View Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white/95 p-3.5 rounded-2xl border-2 border-[#E16F7C]/30 shadow-sm">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setDocTab('functions')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
               docTab === 'functions'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-[#6C3A5C] hover:text-[#3a142e] hover:bg-[#E16F7C]/15'
             }`}
           >
             Functions ({functionDocs.length})
@@ -52,10 +52,10 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('classes')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
               docTab === 'classes'
-                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-[#6C3A5C] hover:text-[#3a142e] hover:bg-[#E16F7C]/15'
             }`}
           >
             Classes ({classDocs.length})
@@ -63,10 +63,10 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('apis')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
               docTab === 'apis'
-                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-[#6C3A5C] hover:text-[#3a142e] hover:bg-[#E16F7C]/15'
             }`}
           >
             REST Endpoints ({apiDocs.length})
@@ -74,79 +74,48 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('markdown')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
               docTab === 'markdown'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-[#6C3A5C] hover:text-[#3a142e] hover:bg-[#E16F7C]/15'
             }`}
           >
-            Markdown Spec
+            Full Markdown
           </button>
         </div>
 
         <button
           onClick={downloadMarkdown}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#fff5f8] border-2 border-[#E16F7C]/30 text-xs font-bold text-[#6C3A5C] shadow-sm transition"
         >
-          <Download className="w-3.5 h-3.5" />
-          <span>Download Markdown</span>
+          <Download className="w-3.5 h-3.5 text-[#DD5E98]" />
+          <span>Export Markdown</span>
         </button>
       </div>
 
-      {/* Tab: Functions */}
+      {/* Doc Tab: Functions */}
       {docTab === 'functions' && (
         <div className="space-y-4">
           {functionDocs.length === 0 ? (
-            <p className="text-xs text-slate-400">No standalone functions detected for docstring generation.</p>
+            <p className="text-xs text-[#6C3A5C] font-semibold">No standalone functions detected in snippet.</p>
           ) : (
-            functionDocs.map((fn, i) => (
-              <div key={i} className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+            functionDocs.map((fn, idx) => (
+              <div key={idx} className="glass-panel p-5 rounded-2xl border-2 border-[#E16F7C]/25 bg-white/95 shadow-sm space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-mono">
-                    <span className="text-sm font-bold text-white">{fn.signature}</span>
-                    <button
-                      onClick={() => onLineClick && onLineClick(fn.line)}
-                      className="text-[11px] text-slate-400 hover:text-cyan-400 underline"
-                    >
-                      Line {fn.line}
-                    </button>
+                  <div className="flex items-center gap-2">
+                    <Code className="w-4 h-4 text-[#DD5E98]" />
+                    <span className="text-xs font-mono font-bold text-[#3a142e]">{fn.name}()</span>
                   </div>
                   <button
-                    onClick={() => copyText(fn.jsdoc, `fn-${i}`)}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px]"
+                    onClick={() => copyText(fn.jsdoc, `fn-${idx}`)}
+                    className="p-1.5 rounded-xl bg-white border border-[#E16F7C]/30 text-[#6C3A5C] hover:text-[#DD5E98] transition shadow-sm"
                   >
-                    {copiedId === `fn-${i}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                    <span>Copy JSDoc</span>
+                    {copiedId === `fn-${idx}` ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-
-                <p className="text-xs text-slate-300">{fn.purpose}</p>
-
-                {fn.params.length > 0 && (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs font-mono">
-                      <thead>
-                        <tr className="border-b border-slate-800 text-slate-500">
-                          <th className="pb-1.5">Param</th>
-                          <th className="pb-1.5">Type</th>
-                          <th className="pb-1.5">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/50">
-                        {fn.params.map((p, pi) => (
-                          <tr key={pi}>
-                            <td className="py-1.5 text-cyan-300">{p.name}</td>
-                            <td className="py-1.5 text-amber-300 font-semibold">{p.type}</td>
-                            <td className="py-1.5 text-slate-400 font-sans">{p.description}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                <pre className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-emerald-300 overflow-x-auto">
-                  {fn.jsdoc}
+                <p className="text-xs text-[#6C3A5C] font-medium">{fn.description}</p>
+                <pre className="p-3 rounded-xl bg-[#faf5f8] border border-[#E16F7C]/25 text-xs font-mono text-[#3a142e] overflow-x-auto">
+                  <code>{fn.jsdoc}</code>
                 </pre>
               </div>
             ))
@@ -154,84 +123,21 @@ export default function DocGeneratorView({ docs, onLineClick }) {
         </div>
       )}
 
-      {/* Tab: Classes */}
-      {docTab === 'classes' && (
-        <div className="space-y-4">
-          {classDocs.length === 0 ? (
-            <p className="text-xs text-slate-400">No classes detected in this source code.</p>
-          ) : (
-            classDocs.map((cls, i) => (
-              <div key={i} className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-mono">
-                    <span className="text-sm font-bold text-white">class {cls.name}</span>
-                    {cls.superClass && (
-                      <span className="text-xs text-indigo-400">extends {cls.superClass}</span>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => copyText(cls.jsdoc, `cls-${i}`)}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px]"
-                  >
-                    {copiedId === `cls-${i}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                    <span>Copy Class Doc</span>
-                  </button>
-                </div>
-                <p className="text-xs text-slate-300">{cls.purpose}</p>
-                <pre className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-cyan-300 overflow-x-auto">
-                  {cls.jsdoc}
-                </pre>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* Tab: REST APIs */}
-      {docTab === 'apis' && (
-        <div className="space-y-4">
-          {apiDocs.length === 0 ? (
-            <p className="text-xs text-slate-400">No Express or HTTP endpoints detected in this snippet.</p>
-          ) : (
-            apiDocs.map((api, i) => (
-              <div key={i} className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-mono">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      {api.method}
-                    </span>
-                    <span className="text-sm font-bold text-white">{api.path}</span>
-                  </div>
-                  <span className={`text-[10px] px-2 py-0.5 rounded border ${
-                    api.requiresAuth 
-                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' 
-                      : 'bg-slate-800 text-slate-400 border-slate-700'
-                  }`}>
-                    {api.requiresAuth ? 'Requires Auth' : 'Public'}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300">{api.description}</p>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* Tab: Master Markdown */}
+      {/* Doc Tab: Full Markdown */}
       {docTab === 'markdown' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+        <div className="glass-panel p-6 rounded-3xl border-2 border-[#E16F7C]/30 bg-white/95 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Generated Markdown Specification</h4>
+            <h4 className="text-xs font-extrabold text-[#3a142e]">Compiled Technical Documentation</h4>
             <button
-              onClick={() => copyText(markdownSummary, 'full-md')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"
+              onClick={() => copyText(markdownSummary, 'md-all')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-[#E16F7C]/30 text-xs font-bold text-[#6C3A5C] shadow-sm transition"
             >
-              {copiedId === 'full-md' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedId === 'full-md' ? 'Copied Markdown' : 'Copy All'}</span>
+              {copiedId === 'md-all' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#DD5E98]" />}
+              <span>{copiedId === 'md-all' ? 'Copied' : 'Copy Markdown'}</span>
             </button>
           </div>
-          <pre className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed">
-            {markdownSummary}
+          <pre className="p-4 rounded-2xl bg-[#faf5f8] border border-[#E16F7C]/25 text-xs font-mono text-[#3a142e] overflow-x-auto whitespace-pre-wrap leading-relaxed shadow-inner">
+            <code>{markdownSummary}</code>
           </pre>
         </div>
       )}

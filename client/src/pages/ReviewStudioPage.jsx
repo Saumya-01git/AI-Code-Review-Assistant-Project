@@ -201,11 +201,11 @@ export default function ReviewStudioPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.message || 'Full review suite failed');
 
-      setStaticResults(data.static);
-      setAiResults(data.ai);
-      setComplexityResults(data.complexity);
-      setActiveResultTab('complexity');
-      showNotification('success', `Full Review Complete! Overall Quality Score: ${data.overallScore}/100`);
+      setStaticResults(data.staticAnalysis);
+      setAiResults(data.aiAnalysis);
+      setComplexityResults(data.complexityAnalysis);
+      setActiveResultTab('ai');
+      showNotification('success', `Full Stage 1 + 2 Review executed! Quality Score: ${data.overallScore}/100`);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -218,7 +218,7 @@ export default function ReviewStudioPage() {
 
   const handleGenerateDocs = async () => {
     if (!code || !code.trim()) {
-      showNotification('error', 'Please provide or paste source code to generate documentation.');
+      showNotification('error', 'Please provide source code to generate documentation.');
       return;
     }
 
@@ -244,7 +244,7 @@ export default function ReviewStudioPage() {
 
       setDocsResults(data);
       setActiveResultTab('docs');
-      showNotification('success', `Documentation generated for ${data.summary.totalFunctions} functions & ${data.summary.totalClasses} classes!`);
+      showNotification('success', `Generated documentation for ${data.summary.totalFunctions} functions & ${data.summary.totalClasses} classes.`);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -341,15 +341,15 @@ export default function ReviewStudioPage() {
   const chars = code ? code.length : 0;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in pb-16">
       {/* Studio Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Code2 className="w-5 h-5 text-cyan-400" />
+          <h2 className="text-xl font-black text-[#3a142e] flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-[#DD5E98]" />
             <span>Review Studio & Code Workspace</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-[#6C3A5C] font-semibold mt-1">
             Submit code snippets or upload source files to inspect syntax, quality, complexity, and security.
           </p>
         </div>
@@ -358,25 +358,25 @@ export default function ReviewStudioPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleSaveSnippet}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[#fff5f8] text-[#6C3A5C] border-2 border-[#E16F7C]/30 text-xs font-bold transition shadow-sm"
           >
-            <Save className="w-3.5 h-3.5 text-slate-400" />
+            <Save className="w-3.5 h-3.5 text-[#DD5E98]" />
             <span>Save Snippet</span>
           </button>
 
           <button
             onClick={handleRunStaticAnalysis}
             disabled={analyzingStatic || analyzingFull}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition disabled:opacity-50"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-[#fff5f8] text-[#6C3A5C] border-2 border-[#E16F7C]/30 text-xs font-bold transition disabled:opacity-50 shadow-sm"
           >
             {analyzingStatic ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#DD5E98]" />
                 <span>Linting...</span>
               </>
             ) : (
               <>
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#DD5E98]" />
                 <span>Stage 1: Static</span>
               </>
             )}
@@ -385,16 +385,16 @@ export default function ReviewStudioPage() {
           <button
             onClick={handleGenerateDocs}
             disabled={generatingDocs || analyzingStatic || analyzingFull}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-[#fff5f8] text-[#6C3A5C] border-2 border-[#E16F7C]/30 text-xs font-bold transition disabled:opacity-50 shadow-sm"
           >
             {generatingDocs ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-purple-400" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#CC4BC2]" />
                 <span>Documenting...</span>
               </>
             ) : (
               <>
-                <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                <BookOpen className="w-3.5 h-3.5 text-[#CC4BC2]" />
                 <span>Auto Docs</span>
               </>
             )}
@@ -403,7 +403,7 @@ export default function ReviewStudioPage() {
           <button
             onClick={handleRunFullSuite}
             disabled={analyzingStatic || analyzingFull}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E16F7C] via-[#DD5E98] to-[#CC4BC2] hover:opacity-95 text-white text-xs font-extrabold shadow-lg shadow-[#DD5E98]/30 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
           >
             {analyzingFull ? (
               <>
@@ -412,7 +412,7 @@ export default function ReviewStudioPage() {
               </>
             ) : (
               <>
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <Sparkles className="w-3.5 h-3.5 text-[#C1AE7C]" />
                 <span>Full Review & Complexity</span>
               </>
             )}
@@ -423,47 +423,47 @@ export default function ReviewStudioPage() {
       {/* Notification Toast */}
       {notification && (
         <div
-          className={`p-3 rounded-xl border text-xs flex items-center gap-2 transition-all ${
+          className={`p-3.5 rounded-2xl border-2 text-xs font-bold flex items-center gap-2 transition-all shadow-md ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              ? 'bg-emerald-50 border-emerald-400 text-emerald-800'
+              : 'bg-rose-50 border-rose-400 text-rose-800'
           }`}
         >
           {notification.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
           ) : (
-            <AlertCircle className="w-4 h-4 shrink-0" />
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
           )}
           <span>{notification.message}</span>
         </div>
       )}
 
       {/* Submission Method Tabs */}
-      <div className="flex border-b border-slate-800 gap-4">
+      <div className="flex border-b-2 border-[#E16F7C]/25 gap-4">
         <button
           onClick={() => setActiveTab('snippet')}
-          className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+          className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
             activeTab === 'snippet'
-              ? 'border-cyan-400 text-cyan-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-[#DD5E98] text-[#3a142e]'
+              : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
           }`}
         >
-          <Code2 className="w-4 h-4" />
+          <Code2 className="w-4 h-4 text-[#DD5E98]" />
           <span>Paste Code Snippet</span>
         </button>
 
         <button
           onClick={() => setActiveTab('upload')}
-          className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+          className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
             activeTab === 'upload'
-              ? 'border-cyan-400 text-cyan-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-[#DD5E98] text-[#3a142e]'
+              : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
           }`}
         >
-          <UploadCloud className="w-4 h-4" />
+          <UploadCloud className="w-4 h-4 text-[#DD5E98]" />
           <span>Upload Source Files</span>
           {uploadedFiles.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px]">
+            <span className="px-2 py-0.5 rounded-full bg-[#E16F7C]/20 text-[#6C3A5C] text-[10px] font-mono font-bold">
               {uploadedFiles.length}
             </span>
           )}
@@ -471,38 +471,38 @@ export default function ReviewStudioPage() {
 
         <button
           onClick={() => setActiveTab('github')}
-          className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+          className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
             activeTab === 'github'
-              ? 'border-indigo-400 text-indigo-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
+              ? 'border-[#CC4BC2] text-[#3a142e]'
+              : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
           }`}
         >
-          <GitBranch className="w-4 h-4" />
+          <GitBranch className="w-4 h-4 text-[#CC4BC2]" />
           <span>GitHub Repo (Scope Note)</span>
         </button>
       </div>
 
       {/* GitHub Repo Scope Note View */}
       {activeTab === 'github' && (
-        <div className="glass-panel p-6 rounded-2xl border border-indigo-500/30 space-y-4">
+        <div className="glass-panel p-6 rounded-3xl border-2 border-[#E16F7C]/30 space-y-4 bg-white/95 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <div className="p-2.5 rounded-2xl bg-[#DD5E98]/15 text-[#DD5E98] border border-[#DD5E98]/30">
               <GitBranch className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-white">GitHub Repository API Integration</h3>
-              <p className="text-xs text-indigo-300 font-medium">Curriculum Scope Specification: Not Working on</p>
+              <h3 className="text-sm font-extrabold text-[#3a142e]">GitHub Repository API Integration</h3>
+              <p className="text-xs text-[#DD5E98] font-bold">Curriculum Scope Specification: Not Working on</p>
             </div>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed">
-            Per the internship project documentation (Day 5 & Core Requirements), direct GitHub remote repository crawling is explicitly marked as <span className="text-amber-400 font-semibold">"Not Working on"</span> to focus development on in-memory snippet analysis and direct source file uploads via Multer.
+          <p className="text-xs text-[#6C3A5C] leading-relaxed font-medium">
+            Per the internship project documentation (Day 5 & Core Requirements), direct GitHub remote repository crawling is explicitly marked as <span className="text-[#E16F7C] font-bold">"Not Working on"</span> to focus development on in-memory snippet analysis and direct source file uploads via Multer.
           </p>
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-2">
-            <div className="flex items-center gap-2 text-cyan-400 font-medium">
+          <div className="p-4 rounded-2xl bg-[#faf5f8] border border-[#E16F7C]/30 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-[#DD5E98] font-bold">
               <Info className="w-4 h-4" />
               <span>Recommended Workflow</span>
             </div>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-[#6C3A5C] leading-relaxed">
               Please switch to the <strong>Paste Code Snippet</strong> tab to inspect code directly in Monaco Editor, or use <strong>Upload Source Files</strong> to upload your project files.
             </p>
           </div>
@@ -510,15 +510,15 @@ export default function ReviewStudioPage() {
       )}
 
       {/* Top Toolbar */}
-      <div className="glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+      <div className="glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 bg-white/95 border-2 border-[#E16F7C]/30 shadow-md">
         <div className="flex flex-wrap items-center gap-3">
           {/* Language Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Language:</span>
+            <span className="text-xs font-bold text-[#6C3A5C]">Language:</span>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="bg-slate-900 border border-slate-800 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none"
+              className="bg-[#faf5f8] border-2 border-[#E16F7C]/30 focus:border-[#CC4BC2] rounded-xl px-3 py-1.5 text-xs text-[#3a142e] font-bold outline-none shadow-sm"
             >
               <option value="javascript">JavaScript (Node / Web)</option>
               <option value="typescript">TypeScript</option>
@@ -533,11 +533,11 @@ export default function ReviewStudioPage() {
 
           {/* Sample Presets Loader */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Load Preset:</span>
+            <span className="text-xs font-bold text-[#6C3A5C]">Load Preset:</span>
             <select
               onChange={(e) => handlePresetChange(e.target.value)}
               defaultValue=""
-              className="bg-slate-900 border border-slate-800 focus:border-cyan-500 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none"
+              className="bg-[#faf5f8] border-2 border-[#E16F7C]/30 focus:border-[#CC4BC2] rounded-xl px-3 py-1.5 text-xs text-[#3a142e] font-bold outline-none shadow-sm"
             >
               <option value="" disabled>Choose a template...</option>
               <option value="javascript_buggy">Buggy JavaScript (Auth Flaws)</option>
@@ -548,13 +548,13 @@ export default function ReviewStudioPage() {
         </div>
 
         {/* Stats summary */}
-        <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
+        <div className="flex items-center gap-4 text-xs font-mono font-bold text-[#6C3A5C]">
           <span>{lines} lines</span>
-          <span>{chars} characters</span>
+          <span>{chars} chars</span>
           <button
             onClick={() => setCode('')}
             title="Clear Editor"
-            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition"
+            className="p-1.5 text-[#6C3A5C] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -566,7 +566,7 @@ export default function ReviewStudioPage() {
         <div className="space-y-4">
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-800 hover:border-cyan-500/50 bg-slate-900/40 hover:bg-slate-900/70 rounded-2xl p-8 text-center cursor-pointer transition group"
+            className="border-2 border-dashed border-[#E16F7C]/40 hover:border-[#CC4BC2] bg-white/80 hover:bg-white rounded-3xl p-8 text-center cursor-pointer transition group shadow-md"
           >
             <input
               ref={fileInputRef}
@@ -576,13 +576,13 @@ export default function ReviewStudioPage() {
               onChange={handleFileUpload}
               className="hidden"
             />
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
-              <UploadCloud className="w-6 h-6" />
+            <div className="w-14 h-14 rounded-2xl bg-[#E16F7C]/15 text-[#DD5E98] flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition shadow-sm border border-[#E16F7C]/30">
+              <UploadCloud className="w-7 h-7" />
             </div>
-            <h4 className="text-sm font-semibold text-white">
+            <h4 className="text-sm font-extrabold text-[#3a142e]">
               {uploading ? 'Processing uploaded files...' : 'Click or drag files here to upload'}
             </h4>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+            <p className="text-xs text-[#6C3A5C] mt-1 max-w-sm mx-auto font-medium">
               Supports JavaScript, TypeScript, Python, Java, C++, HTML, and CSS (up to 5MB each).
             </p>
           </div>
@@ -594,15 +594,15 @@ export default function ReviewStudioPage() {
                 <button
                   key={i}
                   onClick={() => handleSelectUploadedFile(i)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border-2 transition shadow-sm ${
                     selectedFileIdx === i
-                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow'
-                      : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
+                      ? 'bg-gradient-to-r from-[#E16F7C]/25 to-[#CC4BC2]/25 text-[#3a142e] border-[#DD5E98]'
+                      : 'bg-white text-[#6C3A5C] border-[#E16F7C]/30 hover:bg-[#fff5f8]'
                   }`}
                 >
-                  <FileCode className="w-3.5 h-3.5 text-cyan-400" />
+                  <FileCode className="w-3.5 h-3.5 text-[#DD5E98]" />
                   <span>{f.originalName}</span>
-                  <span className="text-[10px] text-slate-400 font-mono">({f.lineCount} lines)</span>
+                  <span className="text-[10px] text-[#6C3A5C]/80 font-mono">({f.lineCount} lines)</span>
                 </button>
               ))}
             </div>
@@ -611,13 +611,13 @@ export default function ReviewStudioPage() {
       )}
 
       {/* Monaco Code Editor Workspace */}
-      <div className="rounded-2xl overflow-hidden border border-slate-800/80 shadow-2xl bg-slate-950">
-        <div className="h-10 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-slate-300 font-mono">
-            <FileCheck className="w-3.5 h-3.5 text-cyan-400" />
+      <div className="rounded-3xl overflow-hidden border-2 border-[#E16F7C]/35 shadow-2xl bg-white">
+        <div className="h-10 bg-gradient-to-r from-[#fff5f8] to-white border-b border-[#E16F7C]/20 px-4 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-[#3a142e] font-mono font-bold">
+            <FileCheck className="w-3.5 h-3.5 text-[#DD5E98]" />
             <span>{snippetTitle}</span>
           </div>
-          <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-800 text-slate-400">
+          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-[#E16F7C]/15 text-[#6C3A5C] border border-[#E16F7C]/30">
             {language}
           </span>
         </div>
@@ -626,7 +626,7 @@ export default function ReviewStudioPage() {
           <Editor
             height="100%"
             language={language}
-            theme="vs-dark"
+            theme="vs"
             value={code}
             onMount={handleEditorDidMount}
             onChange={(val) => setCode(val || '')}
@@ -646,22 +646,22 @@ export default function ReviewStudioPage() {
       </div>
 
       {/* Review Results Suite */}
-      {(staticResults || aiResults || complexityResults) && (
+      {(staticResults || aiResults || complexityResults || docsResults) && (
         <div ref={resultsRef} className="space-y-4">
           {/* Results Tab Selector */}
-          <div className="flex border-b border-slate-800 gap-4 mt-8">
+          <div className="flex border-b-2 border-[#E16F7C]/25 gap-4 mt-8">
             {staticResults && (
               <button
                 onClick={() => setActiveResultTab('static')}
-                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
                   activeResultTab === 'static'
-                    ? 'border-cyan-400 text-cyan-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#DD5E98] text-[#3a142e]'
+                    : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
                 }`}
               >
-                <ShieldCheck className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4 text-[#DD5E98]" />
                 <span>Stage 1: Static Analysis</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-300 text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-[#E16F7C]/15 text-[#6C3A5C] text-[10px] font-mono font-bold">
                   {staticResults.findings.length}
                 </span>
               </button>
@@ -670,15 +670,15 @@ export default function ReviewStudioPage() {
             {aiResults && (
               <button
                 onClick={() => setActiveResultTab('ai')}
-                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
                   activeResultTab === 'ai'
-                    ? 'border-indigo-400 text-indigo-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#CC4BC2] text-[#3a142e]'
+                    : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
                 }`}
               >
-                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <Sparkles className="w-4 h-4 text-[#CC4BC2]" />
                 <span>Stage 2: AI Review</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-[#CC4BC2]/20 text-[#6C3A5C] text-[10px] font-mono font-bold">
                   {aiResults.aiScore}/100
                 </span>
               </button>
@@ -687,15 +687,15 @@ export default function ReviewStudioPage() {
             {complexityResults && (
               <button
                 onClick={() => setActiveResultTab('complexity')}
-                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
                   activeResultTab === 'complexity'
-                    ? 'border-emerald-400 text-emerald-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#C1AE7C] text-[#3a142e]'
+                    : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
                 }`}
               >
-                <Code2 className="w-4 h-4" />
+                <Code2 className="w-4 h-4 text-[#C1AE7C]" />
                 <span>Complexity & Code Smells</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-[#C1AE7C]/25 text-[#6C3A5C] text-[10px] font-mono font-bold">
                   M={complexityResults.cyclomaticComplexity.score}
                 </span>
               </button>
@@ -704,15 +704,15 @@ export default function ReviewStudioPage() {
             {docsResults && (
               <button
                 onClick={() => setActiveResultTab('docs')}
-                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                className={`pb-3 text-xs font-extrabold flex items-center gap-2 border-b-2 transition ${
                   activeResultTab === 'docs'
-                    ? 'border-purple-400 text-purple-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'border-[#DD5E98] text-[#3a142e]'
+                    : 'border-transparent text-[#6C3A5C]/70 hover:text-[#3a142e]'
                 }`}
               >
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className="w-4 h-4 text-[#DD5E98]" />
                 <span>Auto Documentation</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-[#DD5E98]/20 text-[#6C3A5C] text-[10px] font-mono font-bold">
                   {docsResults.summary.totalFunctions} Docs
                 </span>
               </button>
