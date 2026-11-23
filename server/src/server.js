@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import authRoutes from './routes/authRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import githubRoutes from './routes/githubRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 import './db/database.js'; // Ensures tables are initialized
 
 dotenv.config();
@@ -34,6 +35,9 @@ app.use('/api', uploadRoutes);
 
 // GitHub Integration Scope Routes
 app.use('/api', githubRoutes);
+
+// Review Engine Routes
+app.use('/api', reviewRoutes);
 
 // 404 Handler
 app.use((req, res) => {
