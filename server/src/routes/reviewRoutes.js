@@ -3,9 +3,29 @@ import { authenticateToken } from '../middleware/auth.js';
 import { analyzeStaticCode } from '../services/staticAnalyzer.js';
 import { reviewCodeWithAI } from '../services/aiReviewer.js';
 import { analyzeComplexity } from '../services/complexityAnalyzer.js';
+import { generateDocumentation } from '../services/docGenerator.js';
 import { db } from '../db/database.js';
 
 const router = Router();
+
+// Generate Auto-Documentation for Functions, Classes, and APIs
+router.post('/reviews/docs', authenticateToken, (req, res) => {
+  try {
+    const { code, language, fileName } = req.body;
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, message: 'Source code is required.' });
+    }
+
+    const lang = language || 'javascript';
+    const targetFile = fileName || 'code.js';
+
+    const docs = generateDocumentation(code, lang, targetFile);
+    return res.json(docs);
+  } catch (error) {
+    console.error('Doc generation error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to generate documentation.' });
+  }
+});
 
 // Run Complexity Analysis & Code Smell Reporting
 router.post('/reviews/complexity', authenticateToken, (req, res) => {

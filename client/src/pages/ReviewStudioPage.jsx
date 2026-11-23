@@ -14,12 +14,14 @@ import {
   Info,
   Play,
   ShieldCheck,
-  Loader2
+  Loader2,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import StaticAnalysisResults from '../components/review/StaticAnalysisResults';
 import ComplexityDashboard from '../components/review/ComplexityDashboard';
 import AIReviewResults from '../components/review/AIReviewResults';
+import DocGeneratorView from '../components/review/DocGeneratorView';
 
 const CODE_PRESETS = {
   javascript_buggy: {
@@ -110,10 +112,12 @@ export default function ReviewStudioPage() {
   const [staticResults, setStaticResults] = useState(null);
   const [aiResults, setAiResults] = useState(null);
   const [complexityResults, setComplexityResults] = useState(null);
+  const [docsResults, setDocsResults] = useState(null);
   const [analyzingStatic, setAnalyzingStatic] = useState(false);
   const [analyzingAi, setAnalyzingAi] = useState(false);
   const [analyzingFull, setAnalyzingFull] = useState(false);
-  const [activeResultTab, setActiveResultTab] = useState('static'); // 'static' | 'ai' | 'complexity'
+  const [generatingDocs, setGeneratingDocs] = useState(false);
+  const [activeResultTab, setActiveResultTab] = useState('static'); // 'static' | 'ai' | 'complexity' | 'docs'
 
   const editorInstanceRef = useRef(null);
   const resultsRef = useRef(null);
@@ -209,6 +213,45 @@ export default function ReviewStudioPage() {
       showNotification('error', err.message);
     } finally {
       setAnalyzingFull(false);
+    }
+  };
+
+  const handleGenerateDocs = async () => {
+    if (!code || !code.trim()) {
+      showNotification('error', 'Please provide or paste source code to generate documentation.');
+      return;
+    }
+
+    setGeneratingDocs(true);
+    setNotification(null);
+
+    try {
+      const res = await fetch('/api/reviews/docs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          code,
+          language,
+          fileName: snippetTitle || 'code.js'
+        })
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Documentation generation failed');
+
+      setDocsResults(data);
+      setActiveResultTab('docs');
+      showNotification('success', `Documentation generated for ${data.summary.totalFunctions} functions & ${data.summary.totalClasses} classes!`);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } catch (err) {
+      showNotification('error', err.message);
+    } finally {
+      setGeneratingDocs(false);
     }
   };
 
@@ -335,6 +378,24 @@ export default function ReviewStudioPage() {
               <>
                 <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Stage 1: Static</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleGenerateDocs}
+            disabled={generatingDocs || analyzingStatic || analyzingFull}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition disabled:opacity-50"
+          >
+            {generatingDocs ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-purple-400" />
+                <span>Documenting...</span>
+              </>
+            ) : (
+              <>
+                <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                <span>Auto Docs</span>
               </>
             )}
           </button>
@@ -639,6 +700,23 @@ export default function ReviewStudioPage() {
                 </span>
               </button>
             )}
+
+            {docsResults && (
+              <button
+                onClick={() => setActiveResultTab('docs')}
+                className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition ${
+                  activeResultTab === 'docs'
+                    ? 'border-purple-400 text-purple-400'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Auto Documentation</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 text-[10px]">
+                  {docsResults.summary.totalFunctions} Docs
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Active Tab View */}
@@ -659,6 +737,13 @@ export default function ReviewStudioPage() {
           {activeResultTab === 'complexity' && complexityResults && (
             <ComplexityDashboard 
               complexity={complexityResults} 
+              onLineClick={handleLineClick} 
+            />
+          )}
+
+          {activeResultTab === 'docs' && docsResults && (
+            <DocGeneratorView 
+              docs={docsResults} 
               onLineClick={handleLineClick} 
             />
           )}
