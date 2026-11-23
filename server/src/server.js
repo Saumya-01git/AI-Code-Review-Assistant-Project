@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import githubRoutes from './routes/githubRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import { errorHandler } from './middleware/errorHandler.js';
 import './db/database.js'; // Ensures tables are initialized
 
 dotenv.config();
@@ -44,11 +45,8 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.url} not found` });
 });
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled server error:', err);
-  res.status(500).json({ success: false, message: 'Internal Server Error' });
-});
+// Centralized Error Handler Middleware
+app.use(errorHandler);
 
 // Only start server if executed directly
 const isDirectExecution = process.argv[1] && fileURLToPath(import.meta.url).toLowerCase() === path.resolve(process.argv[1]).toLowerCase();
