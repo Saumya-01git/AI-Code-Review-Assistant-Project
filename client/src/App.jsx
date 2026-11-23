@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import CornerDecorativeBox from './components/layout/CornerDecorativeBox';
 import DashboardPage from './pages/DashboardPage';
 import ReviewStudioPage from './pages/ReviewStudioPage';
 import HistoryPage from './pages/HistoryPage';
@@ -12,30 +13,35 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* Protected App Routes */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="review" element={<ReviewStudioPage />} />
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="settings" element={<SettingsPage />} />
-      </Route>
+        {/* Protected App Routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="review" element={<ReviewStudioPage />} />
+          <Route path="history" element={<HistoryPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+
+      {/* Global 5-Color Corner Square with Moving Background & Star Shining Effect */}
+      <CornerDecorativeBox />
+    </>
   );
 }

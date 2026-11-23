@@ -3,41 +3,123 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-sand: #C1AE7C;
+    --color-bubblegum: #E16F7C;
+    --color-peony: #DD5E98;
+    --color-orchid: #CC4BC2;
+    --color-blackberry: #6C3A5C;
+  }
+
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply antialiased font-sans transition-colors duration-300;
+    background-color: #faf7f5;
+    color: #2e1828;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(225, 111, 124, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(204, 75, 194, 0.09) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(193, 174, 124, 0.07) 0px, transparent 60%),
+      radial-gradient(at 100% 100%, rgba(108, 58, 92, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+  }
+
+  .dark body {
+    background-color: #170d15;
+    color: #fdf2f8;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(221, 94, 152, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(204, 75, 194, 0.22) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(193, 174, 124, 0.14) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(108, 58, 92, 0.3) 0px, transparent 50%);
   }
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars in 5-color palette */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: rgba(193, 174, 124, 0.1);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #E16F7C, #CC4BC2);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: linear-gradient(135deg, #DD5E98, #6C3A5C);
 }
 
-/* Glassmorphism helpers */
+/* 5-Color Palette Glassmorphic Panel (Light & Dark) */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(225, 111, 124, 0.22);
+  box-shadow: 0 10px 30px -10px rgba(108, 58, 92, 0.08), 0 1px 3px rgba(193, 174, 124, 0.12);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-panel-hover {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.dark .glass-panel {
+  background: rgba(36, 18, 31, 0.78);
+  border: 1px solid rgba(204, 75, 194, 0.22);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(221, 94, 152, 0.12);
 }
-.glass-panel-hover:hover {
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(99, 102, 241, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+.glass-panel:hover {
+  border-color: rgba(204, 75, 194, 0.45);
+  box-shadow: 0 16px 36px -10px rgba(204, 75, 194, 0.2), 0 0 16px rgba(193, 174, 124, 0.2);
+}
+
+/* Star Shining Shimmer Effect */
+.star-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.star-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.4) 45%,
+    rgba(193, 174, 124, 0.5) 50%,
+    rgba(204, 75, 194, 0.4) 55%,
+    transparent 80%
+  );
+  transform: rotate(25deg);
+  animation: shineSweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shineSweep {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  35%, 100% { transform: translateX(100%) rotate(25deg); }
+}
+
+/* Vibrant 5-Color Gradient Helpers */
+.bg-gradient-palette {
+  background: linear-gradient(135deg, #C1AE7C 0%, #E16F7C 30%, #DD5E98 60%, #CC4BC2 100%);
+}
+
+.bg-gradient-palette-subtle {
+  background: linear-gradient(135deg, rgba(193, 174, 124, 0.15) 0%, rgba(225, 111, 124, 0.18) 35%, rgba(204, 75, 194, 0.15) 100%);
+}
+
+.text-gradient-palette {
+  background: linear-gradient(135deg, #C1AE7C 0%, #E16F7C 35%, #CC4BC2 80%, #6C3A5C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Moving Light Background Mesh */
+.moving-mesh {
+  background: linear-gradient(120deg, rgba(193,174,124,0.3), rgba(225,111,124,0.4), rgba(221,94,152,0.4), rgba(204,75,194,0.35), rgba(108,58,92,0.45));
+  background-size: 300% 300%;
+  animation: auroraMove 8s ease infinite alternate;
 }
