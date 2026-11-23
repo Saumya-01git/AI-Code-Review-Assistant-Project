@@ -11,9 +11,13 @@ import {
   AlertCircle,
   FileCheck,
   GitBranch,
-  Info
+  Info,
+  Play,
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import StaticAnalysisResults from '../components/review/StaticAnalysisResults';
 
 const CODE_PRESETS = {
   javascript_buggy: {
@@ -99,6 +103,63 @@ export default function ReviewStudioPage() {
   const [uploading, setUploading] = useState(false);
   const [notification, setNotification] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Stage 1 Static Analysis State
+  const [staticResults, setStaticResults] = useState(null);
+  const [analyzingStatic, setAnalyzingStatic] = useState(false);
+  const editorInstanceRef = useRef(null);
+  const resultsRef = useRef(null);
+
+  const handleEditorDidMount = (editor) => {
+    editorInstanceRef.current = editor;
+  };
+
+  const handleLineClick = (lineNum) => {
+    if (editorInstanceRef.current && lineNum) {
+      editorInstanceRef.current.revealLineInCenter(lineNum);
+      editorInstanceRef.current.setPosition({ lineNumber: lineNum, column: 1 });
+      editorInstanceRef.current.focus();
+    }
+  };
+
+  const handleRunStaticAnalysis = async () => {
+    if (!code || !code.trim()) {
+      showNotification('error', 'Please provide or paste source code to analyze.');
+      return;
+    }
+
+    setAnalyzingStatic(true);
+    setNotification(null);
+
+    try {
+      const res = await fetch('/api/reviews/static', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          code,
+          language,
+          fileName: snippetTitle || 'snippet.js',
+          saveToHistory: true
+        })
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Static analysis failed');
+
+      setStaticResults(data);
+      showNotification('success', `Stage 1 Static Analysis complete: ${data.summary.totalIssues} issue(s) detected.`);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } catch (err) {
+      showNotification('error', err.message);
+    } finally {
+      setAnalyzingStatic(false);
+    }
+  };
 
   const showNotification = (type, message) => {
     setNotification({ type, message });
@@ -207,6 +268,24 @@ export default function ReviewStudioPage() {
           >
             <Save className="w-3.5 h-3.5 text-slate-400" />
             <span>Save Snippet</span>
+          </button>
+
+          <button
+            onClick={handleRunStaticAnalysis}
+            disabled={analyzingStatic}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+          >
+            {analyzingStatic ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Running Linter...</span>
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Stage 1: Static Analysis</span>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -419,6 +498,7 @@ export default function ReviewStudioPage() {
             language={language}
             theme="vs-dark"
             value={code}
+            onMount={handleEditorDidMount}
             onChange={(val) => setCode(val || '')}
             options={{
               fontSize: 13,
@@ -434,6 +514,16 @@ export default function ReviewStudioPage() {
           />
         </div>
       </div>
+
+      {/* Stage 1 Static Code Analysis Results Dashboard */}
+      {staticResults && (
+        <div ref={resultsRef}>
+          <StaticAnalysisResults 
+            results={staticResults} 
+            onLineClick={handleLineClick} 
+          />
+        </div>
+      )}
     </div>
   );
 }
