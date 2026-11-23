@@ -9,8 +9,7 @@ import {
   PlusCircle, 
   ShieldCheck,
   Sun,
-  Moon,
-  Star
+  Moon
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -24,53 +23,51 @@ export default function Navbar() {
   };
 
   return (
-    <header className="h-24 border-b-2 border-[#DD5E98]/30 bg-white/95 dark:bg-[#281325]/95 backdrop-blur-2xl px-8 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-3">
-          <span className="flex h-3.5 w-3.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DD5E98] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#E16F7C]"></span>
-          </span>
-          <span className="text-base font-black text-[#6C3A5C] uppercase tracking-wider hidden sm:inline font-mono">
-            Guardian Shield Online
-          </span>
-        </div>
+    <header className="h-16 border-b border-slate-200/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 transition-colors">
+      <div className="flex items-center gap-3">
+        <span className="flex h-2.5 w-2.5 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DD5E98] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E16F7C]"></span>
+        </span>
+        <span className="text-xs font-bold text-slate-700 dark:text-slate-200 tracking-wider hidden sm:inline font-mono">
+          GUARDIAN SHIELD ONLINE
+        </span>
       </div>
 
-      <div className="flex items-center gap-4 sm:gap-6">
+      <div className="flex items-center gap-3 sm:gap-4">
         {/* Light / Dark Mode Toggle */}
         <button
           onClick={toggleTheme}
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
-          className="p-3 rounded-2xl text-[#6C3A5C] hover:bg-[#E16F7C]/20 border-2 border-[#DD5E98]/35 transition shadow-sm bg-white"
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition"
         >
-          {theme === 'dark' ? <Sun className="w-5 h-5 text-[#C1AE7C]" /> : <Moon className="w-5 h-5 text-[#CC4BC2]" />}
+          {theme === 'dark' ? <Sun className="w-4 h-4 text-[#C1AE7C]" /> : <Moon className="w-4 h-4 text-[#CC4BC2]" />}
         </button>
 
-        {/* New Review Button in 5-Color Gradient with Bigger Text */}
+        {/* New Review Button in 5-Color Gradient */}
         <Link
           to="/review"
-          className="flex items-center gap-3 px-6 py-3 text-base font-black rounded-2xl bg-gradient-to-r from-[#E16F7C] via-[#DD5E98] to-[#CC4BC2] text-white shadow-xl shadow-[#DD5E98]/35 hover:shadow-[#DD5E98]/55 hover:scale-[1.03] active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#E16F7C] via-[#DD5E98] to-[#CC4BC2] text-white shadow-md shadow-[#DD5E98]/25 hover:shadow-lg hover:shadow-[#DD5E98]/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
         >
-          <PlusCircle className="w-5 h-5" />
+          <PlusCircle className="w-4 h-4" />
           <span>New Review</span>
         </Link>
 
         {user && (
-          <div className="flex items-center gap-4 pl-4 border-l-2 border-[#DD5E98]/30">
+          <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-700">
             <div className="hidden sm:flex flex-col text-right">
-              <span className="text-base font-black text-[#2d0f25]">{user.name}</span>
-              <span className="text-xs text-[#6C3A5C] font-mono font-bold">{user.email}</span>
+              <span className="text-xs font-bold text-slate-900 dark:text-white leading-tight">{user.name}</span>
+              <span className="text-[11px] text-slate-500 font-mono">{user.email}</span>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#CC4BC2] via-[#DD5E98] to-[#6C3A5C] flex items-center justify-center text-base font-black text-white shadow-md border-2 border-[#C1AE7C]">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#CC4BC2] via-[#DD5E98] to-[#6C3A5C] flex items-center justify-center text-xs font-bold text-white shadow-sm border border-white">
               {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <button
               onClick={handleLogout}
               title="Logout"
-              className="p-3 rounded-2xl text-[#6C3A5C] hover:text-rose-600 hover:bg-rose-50 transition border border-transparent hover:border-rose-200"
+              className="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         )}

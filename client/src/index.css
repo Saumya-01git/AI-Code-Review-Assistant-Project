@@ -12,44 +12,42 @@
   }
 
   html {
-    font-size: 18px; /* Strictly increase global base font scaling */
+    font-size: 16px;
   }
 
   body {
-    @apply antialiased font-sans transition-colors duration-300 min-h-screen text-[#2d0f25];
-    background-color: #fff9fc;
-    /* Rich, attractive multi-color vibrant canvas mixing Palette + Cyan & Violet highlights */
+    @apply antialiased font-sans transition-colors duration-300 min-h-screen text-slate-800;
+    background-color: #f8fafc;
+    /* Clean, modern, sophisticated ambient mesh with soft multi-color luminescence */
     background-image: 
-      radial-gradient(circle at 6% 8%, rgba(225, 111, 124, 0.30) 0%, transparent 40%),
-      radial-gradient(circle at 94% 8%, rgba(204, 75, 194, 0.32) 0%, transparent 40%),
-      radial-gradient(circle at 50% 30%, rgba(6, 182, 212, 0.18) 0%, transparent 45%),
-      radial-gradient(circle at 10% 85%, rgba(193, 174, 124, 0.32) 0%, transparent 45%),
-      radial-gradient(circle at 90% 85%, rgba(108, 58, 92, 0.28) 0%, transparent 45%),
-      radial-gradient(circle at 50% 80%, rgba(221, 94, 152, 0.28) 0%, transparent 45%),
-      linear-gradient(135deg, #ffffff 0%, #fff3f8 35%, #fef5ff 70%, #fffef8 100%);
+      radial-gradient(circle at 10% 10%, rgba(225, 111, 124, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(204, 75, 194, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 30%, rgba(6, 182, 212, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 15% 85%, rgba(193, 174, 124, 0.09) 0%, transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(108, 58, 92, 0.07) 0%, transparent 40%),
+      linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     background-attachment: fixed;
     background-size: 100% 100%;
   }
 
   .dark body {
-    background-color: #1f0b1b;
-    color: #fdf2f8;
+    background-color: #0f172a;
+    color: #f8fafc;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(221, 94, 152, 0.28) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(204, 75, 194, 0.32) 0px, transparent 50%),
-      radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.18) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(193, 174, 124, 0.22) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(108, 58, 92, 0.40) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(221, 94, 152, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(204, 75, 194, 0.12) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(193, 174, 124, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(108, 58, 92, 0.15) 0px, transparent 50%);
   }
 }
 
 /* Custom Scrollbars in 5-color palette */
 ::-webkit-scrollbar {
-  width: 9px;
-  height: 9px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(193, 174, 124, 0.18);
+  background: rgba(241, 245, 249, 0.8);
 }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, #E16F7C, #CC4BC2);
@@ -59,29 +57,28 @@
   background: linear-gradient(135deg, #DD5E98, #6C3A5C);
 }
 
-/* 5-Color Radiant Glassmorphic Panel (Light by default) */
+/* Crisp, Modern Glassmorphic Cards (Light, Clean, Polished) */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(24px);
-  border: 2px solid rgba(221, 94, 152, 0.35);
-  box-shadow: 0 16px 40px -10px rgba(204, 75, 194, 0.18), 0 3px 10px rgba(193, 174, 124, 0.16);
-  color: #2d0f25;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .glass-panel {
-  background: rgba(45, 18, 38, 0.90);
-  border: 2px solid rgba(204, 75, 194, 0.40);
-  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(221, 94, 152, 0.22);
-  color: #fdf2f8;
+  background: rgba(30, 41, 59, 0.90);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  color: #f8fafc;
 }
 
 .glass-panel:hover {
-  border-color: rgba(204, 75, 194, 0.60);
-  box-shadow: 0 20px 45px -10px rgba(204, 75, 194, 0.30), 0 0 22px rgba(193, 174, 124, 0.30);
+  border-color: rgba(221, 94, 152, 0.4);
+  box-shadow: 0 4px 14px -2px rgba(221, 94, 152, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
 }
 
-/* Star Shining Shimmer Effect */
+/* Subtle Shimmer for High-Priority Buttons */
 .star-shimmer {
   position: relative;
   overflow: hidden;
@@ -97,39 +94,30 @@
   background: linear-gradient(
     60deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.7) 45%,
-    rgba(193, 174, 124, 0.7) 50%,
-    rgba(204, 75, 194, 0.6) 55%,
+    rgba(255, 255, 255, 0.4) 45%,
+    rgba(193, 174, 124, 0.3) 50%,
     transparent 80%
   );
-  transform: rotate(25deg);
-  animation: shineSweep 5s ease-in-out infinite;
-  pointer-events: none;
+  transform: rotate(30deg);
+  animation: starShimmer 4s ease-in-out infinite;
 }
 
-@keyframes shineSweep {
-  0% { transform: translateX(-100%) rotate(25deg); }
-  35%, 100% { transform: translateX(100%) rotate(25deg); }
+@keyframes starShimmer {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  50%, 100% { transform: translateX(100%) rotate(30deg); }
 }
 
-/* Vibrant 5-Color Gradient Helpers */
-.bg-gradient-palette {
-  background: linear-gradient(135deg, #C1AE7C 0%, #E16F7C 25%, #DD5E98 50%, #CC4BC2 75%, #06b6d4 100%);
+@keyframes starShinePulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+  50% { transform: scale(1.15) rotate(15deg); opacity: 1; filter: drop-shadow(0 0 8px #C1AE7C); }
 }
 
-.bg-gradient-palette-subtle {
-  background: linear-gradient(135deg, rgba(193, 174, 124, 0.30) 0%, rgba(225, 111, 124, 0.30) 35%, rgba(204, 75, 194, 0.28) 100%);
+.animate-star-shine {
+  animation: starShinePulse 3s ease-in-out infinite;
 }
 
-.text-gradient-palette {
-  background: linear-gradient(135deg, #6C3A5C 0%, #DD5E98 35%, #CC4BC2 70%, #C1AE7C 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Moving Light Background Mesh */
-.moving-mesh {
-  background: linear-gradient(120deg, rgba(193,174,124,0.45), rgba(225,111,124,0.50), rgba(6,182,212,0.35), rgba(221,94,152,0.50), rgba(204,75,194,0.45), rgba(108,58,92,0.40));
-  background-size: 300% 300%;
-  animation: auroraMove 9s ease infinite alternate;
+@keyframes auroraMove {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
 }

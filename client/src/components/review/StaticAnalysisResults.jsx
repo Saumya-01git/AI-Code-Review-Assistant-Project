@@ -8,9 +8,7 @@ import {
   Check, 
   Download, 
   Filter,
-  ShieldCheck,
-  ShieldAlert,
-  Code
+  ShieldCheck
 } from 'lucide-react';
 
 export default function StaticAnalysisResults({ results, onLineClick }) {
@@ -28,10 +26,10 @@ export default function StaticAnalysisResults({ results, onLineClick }) {
   });
 
   const getScoreColor = (score) => {
-    if (score >= 90) return 'text-emerald-800 border-emerald-400 bg-emerald-50';
-    if (score >= 75) return 'text-[#DD5E98] border-[#DD5E98]/50 bg-[#DD5E98]/15';
-    if (score >= 60) return 'text-[#C1AE7C] border-[#C1AE7C]/50 bg-[#C1AE7C]/20';
-    return 'text-rose-800 border-rose-400 bg-rose-50';
+    if (score >= 90) return 'text-emerald-700 border-emerald-300 bg-emerald-50';
+    if (score >= 75) return 'text-[#DD5E98] border-[#DD5E98]/30 bg-[#DD5E98]/10';
+    if (score >= 60) return 'text-[#8f7535] border-[#C1AE7C]/40 bg-[#C1AE7C]/15';
+    return 'text-rose-700 border-rose-300 bg-rose-50';
   };
 
   const getScoreGrade = (score) => {
@@ -71,97 +69,97 @@ ${findings.map((f, i) => `${i + 1}. [${f.severity.toUpperCase()}] Line ${f.line_
   };
 
   return (
-    <div className="space-y-8 pt-6 border-t-2 border-[#DD5E98]/30 animate-fade-in">
+    <div className="space-y-6 pt-5 border-t border-slate-200 animate-fade-in">
       {/* Dashboard Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Score Card */}
-        <div className={`p-6 rounded-3xl border-2 shadow-md flex items-center justify-between ${getScoreColor(overallScore)}`}>
+        <div className={`p-5 rounded-xl border shadow-sm flex items-center justify-between ${getScoreColor(overallScore)}`}>
           <div>
-            <span className="text-sm font-black uppercase tracking-wider opacity-90">Static Score</span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl sm:text-5xl font-black font-display">{overallScore}</span>
-              <span className="text-base font-bold opacity-80">/100</span>
+            <span className="text-xs font-bold uppercase tracking-wider opacity-85">Static Score</span>
+            <div className="flex items-baseline gap-1.5 mt-1.5">
+              <span className="text-2xl sm:text-3xl font-extrabold font-display">{overallScore}</span>
+              <span className="text-xs font-semibold opacity-75">/100</span>
             </div>
-            <span className="text-xs sm:text-sm font-bold opacity-90 mt-1.5 inline-block">
+            <span className="text-xs font-medium opacity-85 mt-1 inline-block">
               Grade {getScoreGrade(overallScore)} Rating
             </span>
           </div>
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/80 shadow border border-current text-3xl font-black">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white/90 shadow-sm border border-current text-xl font-bold">
             {getScoreGrade(overallScore)}
           </div>
         </div>
 
         {/* Errors Card */}
-        <div className="glass-panel p-6 rounded-3xl border-2 border-rose-300 bg-white/95 shadow-md">
-          <div className="flex items-center justify-between text-rose-600 font-black">
-            <span className="text-sm font-black">Errors</span>
-            <AlertCircle className="w-5 h-5" />
+        <div className="p-5 rounded-xl border border-slate-200/90 bg-white shadow-sm">
+          <div className="flex items-center justify-between text-rose-600 font-semibold">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Errors</span>
+            <AlertCircle className="w-4 h-4" />
           </div>
-          <div className="text-4xl font-black font-display text-[#2d0f25] mt-2">{summary.errors || 0}</div>
-          <span className="text-xs sm:text-sm text-[#6C3A5C] mt-1.5 block font-bold">Critical syntax & security</span>
+          <div className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 mt-1.5">{summary.errors || 0}</div>
+          <span className="text-xs text-slate-500 mt-1 block">Critical syntax & security</span>
         </div>
 
         {/* Warnings Card */}
-        <div className="glass-panel p-6 rounded-3xl border-2 border-amber-300 bg-white/95 shadow-md">
-          <div className="flex items-center justify-between text-amber-600 font-black">
-            <span className="text-sm font-black">Warnings</span>
-            <AlertTriangle className="w-5 h-5" />
+        <div className="p-5 rounded-xl border border-slate-200/90 bg-white shadow-sm">
+          <div className="flex items-center justify-between text-amber-600 font-semibold">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Warnings</span>
+            <AlertTriangle className="w-4 h-4" />
           </div>
-          <div className="text-4xl font-black font-display text-[#2d0f25] mt-2">{summary.warnings || 0}</div>
-          <span className="text-xs sm:text-sm text-[#6C3A5C] mt-1.5 block font-bold">Unused vars, loose equality</span>
+          <div className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 mt-1.5">{summary.warnings || 0}</div>
+          <span className="text-xs text-slate-500 mt-1 block">Unused vars, loose equality</span>
         </div>
 
         {/* Info & Style Card */}
-        <div className="glass-panel p-6 rounded-3xl border-2 border-[#DD5E98]/30 bg-white/95 shadow-md">
-          <div className="flex items-center justify-between text-[#DD5E98] font-black">
-            <span className="text-sm font-black">Styling & Spacing</span>
-            <Info className="w-5 h-5" />
+        <div className="p-5 rounded-xl border border-slate-200/90 bg-white shadow-sm">
+          <div className="flex items-center justify-between text-[#DD5E98] font-semibold">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Styling & Spacing</span>
+            <Info className="w-4 h-4" />
           </div>
-          <div className="text-4xl font-black font-display text-[#2d0f25] mt-2">{summary.infos || 0}</div>
-          <span className="text-xs sm:text-sm text-[#6C3A5C] mt-1.5 block font-bold">Formatting, console logs</span>
+          <div className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 mt-1.5">{summary.infos || 0}</div>
+          <span className="text-xs text-slate-500 mt-1 block">Formatting, console logs</span>
         </div>
       </div>
 
       {/* Filter and Action Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white/95 p-5 rounded-3xl border-2 border-[#DD5E98]/35 shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
         <div className="flex items-center gap-2 flex-wrap">
-          <Filter className="w-5 h-5 text-[#6C3A5C] ml-1 mr-2" />
+          <Filter className="w-4 h-4 text-slate-400 ml-1 mr-1" />
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filter === 'all'
-                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#2d0f25] hover:bg-[#E16F7C]/15'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             All ({findings.length})
           </button>
           <button
             onClick={() => setFilter('error')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filter === 'error'
-                ? 'bg-rose-500 text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-rose-600 hover:bg-rose-50'
+                ? 'bg-rose-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-rose-600 hover:bg-rose-50'
             }`}
           >
             Errors ({summary.errors || 0})
           </button>
           <button
             onClick={() => setFilter('warning')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filter === 'warning'
-                ? 'bg-amber-500 text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-amber-600 hover:bg-amber-50'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-amber-600 hover:bg-amber-50'
             }`}
           >
             Warnings ({summary.warnings || 0})
           </button>
           <button
             onClick={() => setFilter('info')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               filter === 'info'
-                ? 'bg-[#CC4BC2] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#CC4BC2] hover:bg-[#CC4BC2]/15'
+                ? 'bg-[#CC4BC2] text-white shadow-sm'
+                : 'text-slate-600 hover:text-[#CC4BC2] hover:bg-purple-50'
             }`}
           >
             Info ({summary.infos || 0})
@@ -169,31 +167,31 @@ ${findings.map((f, i) => `${i + 1}. [${f.severity.toUpperCase()}] Line ${f.line_
         </div>
 
         {/* Export & Copy buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={copySummaryReport}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-[#fff5f9] text-[#6C3A5C] text-sm sm:text-base font-black border-2 border-[#DD5E98]/40 shadow-sm transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200 shadow-sm transition"
           >
-            {copiedSummary ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-[#DD5E98]" />}
+            {copiedSummary ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#DD5E98]" />}
             <span>{copiedSummary ? 'Copied' : 'Copy Report'}</span>
           </button>
           <button
             onClick={downloadJson}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-[#fff5f9] text-[#6C3A5C] text-sm sm:text-base font-black border-2 border-[#DD5E98]/40 shadow-sm transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200 shadow-sm transition"
           >
-            <Download className="w-4 h-4 text-[#CC4BC2]" />
+            <Download className="w-3.5 h-3.5 text-[#CC4BC2]" />
             <span>Download JSON</span>
           </button>
         </div>
       </div>
 
       {/* Findings List */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filteredFindings.length === 0 ? (
-          <div className="glass-panel p-10 rounded-[36px] border-2 border-[#DD5E98]/35 text-center bg-white/95">
-            <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-            <h4 className="text-lg font-black text-[#2d0f25]">No Issues in this Category</h4>
-            <p className="text-sm sm:text-base text-[#6C3A5C] mt-1.5 font-bold">
+          <div className="p-8 rounded-xl border border-slate-200 text-center bg-white">
+            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+            <h4 className="text-sm font-bold text-slate-900">No Issues in this Category</h4>
+            <p className="text-xs text-slate-500 mt-1">
               {filter === 'all' 
                 ? 'Your code passed all static analysis checks cleanly!' 
                 : `No ${filter} issues were detected in this analysis.`}
@@ -204,61 +202,61 @@ ${findings.map((f, i) => `${i + 1}. [${f.severity.toUpperCase()}] Line ${f.line_
             const isError = finding.severity === 'error';
             const isWarning = finding.severity === 'warning';
             const badgeBg = isError 
-              ? 'bg-rose-100 text-rose-800 border-rose-300' 
+              ? 'bg-rose-50 text-rose-700 border-rose-200' 
               : isWarning 
-              ? 'bg-amber-100 text-amber-900 border-amber-300' 
-              : 'bg-[#E16F7C]/25 text-[#2d0f25] border-[#E16F7C]/50';
+              ? 'bg-amber-50 text-amber-700 border-amber-200' 
+              : 'bg-[#E16F7C]/10 text-[#DD5E98] border-[#E16F7C]/30';
 
             const Icon = isError ? AlertCircle : isWarning ? AlertTriangle : Info;
 
             return (
               <div
                 key={idx}
-                className="glass-panel p-6 rounded-3xl border-2 border-[#DD5E98]/30 hover:border-[#CC4BC2]/60 transition group bg-white/95 shadow-md"
+                className="p-4 sm:p-5 rounded-xl border border-slate-200/90 hover:border-[#DD5E98]/40 transition group bg-white shadow-sm"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className={`px-3 py-1 rounded-xl text-xs font-black border uppercase tracking-wider flex items-center gap-2 ${badgeBg}`}>
-                      <Icon className="w-4 h-4" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold border uppercase tracking-wider flex items-center gap-1.5 ${badgeBg}`}>
+                      <Icon className="w-3.5 h-3.5" />
                       <span>{finding.severity}</span>
                     </span>
 
                     {finding.line_number && (
                       <button
                         onClick={() => onLineClick && onLineClick(finding.line_number)}
-                        className="px-3 py-1 rounded-xl bg-[#faf5f9] text-[#6C3A5C] text-xs font-mono font-black border-2 border-[#DD5E98]/40 hover:border-[#DD5E98] transition shadow-sm"
+                        className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-mono font-semibold border border-slate-200 hover:border-[#DD5E98] transition"
                       >
                         Line {finding.line_number}
                       </button>
                     )}
 
                     {finding.rule && (
-                      <span className="text-xs font-mono font-bold text-[#6C3A5C]/90">
+                      <span className="text-[11px] font-mono text-slate-500">
                         rule: {finding.rule}
                       </span>
                     )}
                   </div>
 
-                  <span className="text-xs font-mono font-bold text-[#6C3A5C]/80">
+                  <span className="text-[11px] font-mono text-slate-400">
                     {finding.file_name || fileName || 'code'}
                   </span>
                 </div>
 
-                <h4 className="text-base sm:text-lg font-black text-[#2d0f25] group-hover:text-[#DD5E98] transition">
+                <h4 className="text-sm font-bold text-slate-900 group-hover:text-[#DD5E98] transition">
                   {finding.issue}
                 </h4>
 
-                <p className="text-sm sm:text-base text-[#6C3A5C] mt-2 leading-relaxed font-bold">
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                   {finding.explanation}
                 </p>
 
                 {finding.suggested_fix && (
-                  <div className="mt-4 p-4 rounded-2xl bg-[#fff7fa] border-2 border-[#DD5E98]/35 flex items-start justify-between gap-4 shadow-inner">
-                    <div className="space-y-1.5 overflow-x-auto">
-                      <span className="text-xs font-black tracking-wider text-[#DD5E98] uppercase">
+                  <div className="mt-3 p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-start justify-between gap-3">
+                    <div className="space-y-1 overflow-x-auto">
+                      <span className="text-[11px] font-bold tracking-wider text-[#DD5E98] uppercase">
                         Recommended Solution:
                       </span>
-                      <p className="text-sm sm:text-base font-mono font-black text-[#2d0f25]">
+                      <p className="text-xs font-mono text-slate-800">
                         {finding.suggested_fix}
                       </p>
                     </div>
@@ -266,9 +264,9 @@ ${findings.map((f, i) => `${i + 1}. [${f.severity.toUpperCase()}] Line ${f.line_
                     <button
                       onClick={() => copyFix(finding.suggested_fix, idx)}
                       title="Copy Fix"
-                      className="p-2 rounded-xl bg-white border border-[#DD5E98]/40 text-[#6C3A5C] hover:text-[#DD5E98] transition shrink-0 shadow-sm"
+                      className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-600 hover:text-[#DD5E98] transition shrink-0"
                     >
-                      {copiedIdx === idx ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                      {copiedIdx === idx ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 )}

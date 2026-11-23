@@ -4,10 +4,7 @@ import {
   Code, 
   Copy, 
   Check, 
-  Download, 
-  Layers, 
-  Globe, 
-  FileText 
+  Download
 } from 'lucide-react';
 
 export default function DocGeneratorView({ docs, onLineClick }) {
@@ -35,16 +32,16 @@ export default function DocGeneratorView({ docs, onLineClick }) {
   };
 
   return (
-    <div className="space-y-8 pt-6 border-t-2 border-[#DD5E98]/30 animate-fade-in">
-      {/* Doc View Navigation with Strictly Increased Sizes */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white/95 p-5 rounded-3xl border-2 border-[#DD5E98]/35 shadow-md">
-        <div className="flex items-center gap-2.5 flex-wrap">
+    <div className="space-y-6 pt-5 border-t border-slate-200 animate-fade-in">
+      {/* Doc View Navigation */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setDocTab('functions')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               docTab === 'functions'
-                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#2d0f25] hover:bg-[#E16F7C]/15'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Functions ({functionDocs.length})
@@ -52,10 +49,10 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('classes')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               docTab === 'classes'
-                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#2d0f25] hover:bg-[#E16F7C]/15'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Classes ({classDocs.length})
@@ -63,10 +60,10 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('apis')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               docTab === 'apis'
-                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#2d0f25] hover:bg-[#E16F7C]/15'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             REST Endpoints ({apiDocs.length})
@@ -74,10 +71,10 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
           <button
             onClick={() => setDocTab('markdown')}
-            className={`px-4 py-2 rounded-2xl text-sm sm:text-base font-black transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               docTab === 'markdown'
-                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-md'
-                : 'text-[#6C3A5C] hover:text-[#2d0f25] hover:bg-[#E16F7C]/15'
+                ? 'bg-gradient-to-r from-[#E16F7C] to-[#DD5E98] text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Full Markdown
@@ -86,35 +83,35 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
         <button
           onClick={downloadMarkdown}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white hover:bg-[#fff5f9] border-2 border-[#DD5E98]/40 text-sm sm:text-base font-black text-[#6C3A5C] shadow-sm transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition"
         >
-          <Download className="w-5 h-5 text-[#DD5E98]" />
+          <Download className="w-3.5 h-3.5 text-[#DD5E98]" />
           <span>Export Markdown</span>
         </button>
       </div>
 
       {/* Doc Tab: Functions */}
       {docTab === 'functions' && (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {functionDocs.length === 0 ? (
-            <p className="text-base text-[#6C3A5C] font-bold">No standalone functions detected in snippet.</p>
+            <p className="text-xs text-slate-500">No standalone functions detected in snippet.</p>
           ) : (
             functionDocs.map((fn, idx) => (
-              <div key={idx} className="glass-panel p-6 rounded-3xl border-2 border-[#DD5E98]/30 bg-white/95 shadow-md space-y-3">
+              <div key={idx} className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-sm space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <Code className="w-5 h-5 text-[#DD5E98]" />
-                    <span className="text-base font-mono font-black text-[#2d0f25]">{fn.name}()</span>
+                  <div className="flex items-center gap-2">
+                    <Code className="w-4 h-4 text-[#DD5E98]" />
+                    <span className="text-sm font-mono font-bold text-slate-900">{fn.name}()</span>
                   </div>
                   <button
                     onClick={() => copyText(fn.jsdoc, `fn-${idx}`)}
-                    className="p-2 rounded-xl bg-white border border-[#DD5E98]/40 text-[#6C3A5C] hover:text-[#DD5E98] transition shadow-sm"
+                    className="p-1.5 rounded-md bg-white border border-slate-200 text-slate-600 hover:text-[#DD5E98] transition shadow-sm"
                   >
-                    {copiedId === `fn-${idx}` ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                    {copiedId === `fn-${idx}` ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-                <p className="text-sm sm:text-base text-[#6C3A5C] font-bold">{fn.description}</p>
-                <pre className="p-4 rounded-2xl bg-[#faf5f9] border-2 border-[#DD5E98]/30 text-sm font-mono text-[#2d0f25] overflow-x-auto font-bold">
+                <p className="text-xs text-slate-600">{fn.description}</p>
+                <pre className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 overflow-x-auto">
                   <code>{fn.jsdoc}</code>
                 </pre>
               </div>
@@ -125,18 +122,18 @@ export default function DocGeneratorView({ docs, onLineClick }) {
 
       {/* Doc Tab: Full Markdown */}
       {docTab === 'markdown' && (
-        <div className="glass-panel p-8 rounded-[36px] border-2 border-[#DD5E98]/35 bg-white/95 shadow-2xl space-y-4">
+        <div className="p-5 rounded-xl border border-slate-200/90 bg-white shadow-sm space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-base font-black text-[#2d0f25]">Compiled Technical Documentation</h4>
+            <h4 className="text-sm font-bold text-slate-900">Compiled Technical Documentation</h4>
             <button
               onClick={() => copyText(markdownSummary, 'md-all')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white border-2 border-[#DD5E98]/40 text-sm font-black text-[#6C3A5C] shadow-sm transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition"
             >
-              {copiedId === 'md-all' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-[#DD5E98]" />}
+              {copiedId === 'md-all' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#DD5E98]" />}
               <span>{copiedId === 'md-all' ? 'Copied' : 'Copy Markdown'}</span>
             </button>
           </div>
-          <pre className="p-5 rounded-2xl bg-[#faf5f9] border-2 border-[#DD5E98]/30 text-sm font-mono text-[#2d0f25] overflow-x-auto whitespace-pre-wrap leading-relaxed shadow-inner font-bold">
+          <pre className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 overflow-x-auto whitespace-pre-wrap leading-relaxed">
             <code>{markdownSummary}</code>
           </pre>
         </div>
